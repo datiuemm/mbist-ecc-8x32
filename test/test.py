@@ -32,7 +32,8 @@ async def test_project(dut):
 
     await ClockCycles(dut.clk, 200)
 
-    results = dut.uo_out.value & 0b111
+    # FIX
+    results = dut.uo_out.value.integer & 0b111
 
     dut._log.info(f"MBIST results = {results}")
 
