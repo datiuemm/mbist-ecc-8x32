@@ -1,0 +1,352 @@
+MARCHC_R0: begin
+    ram_we     <= 5'b00000;
+    ram_addr   <= local_addr;
+    read_valid <= 1'b0;        // Chưa được check ở chu kỳ sau
+    state      <= MARCHC_R0_CHECK;
+end
+
+MARCHC_R0_CHECK: begin
+    ram_we     <= 5'b00000;
+    ram_addr   <= local_addr;
+    read_valid <= 1'b1;        // Đánh dấu chu kỳ tiếp theo dữ liệu sẽ valid
+
+    // CHỈ CHECK KHI read_valid ĐÃ LÊN 1
+    if (read_valid && (ram_data_o != 40'h00_0000_1100)) begin
+        fail <= 1;
+    end
+
+    if (local_addr == 3'd7) begin
+        if (read_valid) begin // Đợi check xong nốt địa chỉ cuối
+             state <= MARCHC_W1;
+             local_addr <= 3'd0;
+             read_valid <= 1'b0;
+        end
+    end else begin
+        local_addr <= local_addr + 1;
+        state <= MARCHC_R0; 
+    end
+end
+
+
+
+ module MBIST (
+    input wire        clk,
+    input wire        rst_n,
+    input wire        mbist_en,
+    input wire [39:0] ram_data_o,
+
+    output reg [4:0]  ram_we,
+    output reg [2:0]  ram_addr,
+    output reg [39:0] ram_data_i,
+    output reg        ecc_bypass,
+    output reg [2:0]  results
+    //output reg           ram_en
+
+);
+
+//localparam MODE_NORMAL = 2'b00;
+
+//localparam MODE_MARCHC = 2'b01;
+
+//localparam MODE_MBIST_FAULT_INJECTION = 3'b011;
+
+//localparam MODE_ECC_CHECK = 2'b11;
+
+//localparam MODE_RESERVED = 3'b000;
+
+
+localparam MARCHC_IDLE = 3'd0;
+localparam MARCHC_W0 = 3'd1;
+localparam MARCHC_R0  = 3'd2;
+localparam MARCHC_R0_CHECK = 3'd3;
+localparam MARCHC_W1 = 3'd4;
+// localparam MARCHC_R0W1 = 3'd2;
+// localparam MARCHC_R1W0 = 3'd3;
+// localparam MARCHC_R0W1_D = 3'd4;
+
+// localparam MARCHC_R1W0_D = 3'd5;
+// localparam MARCHC_R0 = 3'd6;
+// localparam MARCHC_DONE = 3'd7;
+
+//reg [2:0] mode;
+
+//mode = mbist_en;
+reg [2:0] state;
+//reg [2:0] next_state;
+reg [2:0] local_addr;
+reg       fail;
+
+localparam F_ZERO = 40'h00_0000_0000;
+localparam F_ONE  = 40'hFF_FFFF_FFFF;
+
+reg [39:0] data_q;
+// Thêm thanh ghi này
+reg read_valid;
+reg [2:0] addr_q; // Địa chỉ đang được kiểm tra dữ liệu
+reg       check_en; // Cho phép so sánh dữ liệu
+always @(posedge clk) begin
+    data_q <= ram_data_o;
+    addr_q <= ram_addr;
+end
+reg read_valid_q;
+always @(posedge clk) begin
+    if (!rst_n) begin
+        state <= MARCHC_IDLE;
+        local_addr <= 3'b000;
+        fail <= 1'b0;
+        results <= 3'b000;
+        ecc_bypass <= 1'b0;
+        ram_addr <= 3'b000;
+        ram_data_i <= F_ZERO;
+        data_q <= 40'b0;
+        ram_we <= 5'b00000;
+        addr_q <= 3'b000;
+        read_valid <= 1'b0;
+        read_valid_q <= 1'b0;
+    end
+    else begin
+        read_valid_q <= read_valid;
+        if (mbist_en == 1) begin
+            case (state) 
+                MARCHC_IDLE: begin
+                    ecc_bypass <= 1;
+                    local_addr <= 3'd0;
+                    fail <= 0;
+                    state <= MARCHC_W0;
+                end
+
+                MARCHC_W0: begin
+                    ram_we <= 5'b11111;
+                    ram_addr <= local_addr;
+                    ram_data_i <= 40'h00_0000_1100;
+                    if (local_addr == 3'd7) begin
+                        local_addr <= 3'd0;
+                        state <= MARCHC_R0;
+
+                    end else begin
+                        local_addr <= local_addr + 1;
+                    end
+                end
+
+MARCHC_R0: begin
+    ram_we     <= 5'b00000;
+    ram_addr   <= local_addr;
+    
+    // Đệm read_valid để nó trễ hơn ram_addr đúng 1 chu kỳ
+    // Điều này giúp ram_data_o có đủ thời gian để ra khỏi RAM
+    read_valid <= 1'b1; 
+
+    // CHỈ check khi dữ liệu đã thực sự ổn định ở đầu ra RAM
+    // Chúng ta sử dụng một thanh ghi phụ 'read_valid_q' để delay việc check
+    if (read_valid_q && (ram_data_o != 40'h00_0000_1100)) begin
+        fail <= 1;
+    end
+
+    if (local_addr == 3'd7) begin
+        if (read_valid_q) begin // Đợi cho đến khi check xong addr cuối
+            state      <= MARCHC_W1;
+            local_addr <= 3'd0;
+            read_valid <= 1'b0;
+        end
+    end else begin
+        local_addr <= local_addr + 1;
+    end
+end
+
+
+                // MARCHC_R0W1: begin
+                //     ram_we <= 5'b00000;
+                //     ram_addr <= local_addr;
+                //     if (ram_data_o != F_ZERO) begin
+                //         fail <= 1;
+                //     end
+                //     if (local_addr == 3'd7) begin
+                //         local_addr <= 3'd7;
+                //         //state <= MARCHC_R1W0;
+                //     end else begin
+                //         local_addr <= local_addr + 1;
+                //     end
+                // end
+
+                // MARCHC_R0W1: begin
+                //     ram_we <= 5'b00000;
+                //     ram_addr <= local_addr;
+                //     if (ram_data_o != F_ZERO) begin
+                //         fail <= 1;
+                //     end 
+                //     ram_we <= 5'b11111;
+                //     ram_data_i <= 40'h00_0000_1100;
+                //     if (local_addr == 3'd7) begin
+                //         local_addr <= 3'd7;
+                //         state <= MARCHC_R1W0;
+                //     end else begin
+                //         local_addr <= local_addr + 1;
+                //     end
+                // end
+
+
+                // MARCHC_R1W0: begin
+
+                //     ram_addr <= local_addr;
+
+                //     if (ram_data_o != F_ONE) begin
+
+                //         fail <= 1;
+
+                //     end 
+
+                //     ram_data_i <= F_ZERO;
+
+                //     if (local_addr == 3'd0) begin
+
+                //         local_addr <= 3'd7;
+
+                //         state <= MARCHC_R0W1_D;
+
+                //     end else begin
+
+                //         local_addr <= local_addr - 1;
+
+                //     end
+
+                // end
+
+
+                // MARCHC_R0W1_D: begin
+
+                //     ram_addr <= local_addr;
+
+
+                //     if (ram_data_o != F_ZERO) begin
+
+                //         fail <= 1;
+
+                //     end    
+
+
+                //        ram_data_i <= F_ONE;
+
+
+                //     if (local_addr == 3'd0) begin
+
+                //     local_addr <= 3'd7;
+
+                //     state <= MARCHC_R1W0_D;
+
+                //     end else begin
+
+                //     local_addr <= local_addr - 1;
+
+                //     end
+
+                // end
+
+
+
+                // MARCHC_R1W0_D: begin
+
+                //     ram_addr <= local_addr;
+
+
+                //     if (ram_data_o != F_ONE) begin
+
+                //         fail <= 1;
+
+                //     end
+
+
+                //     ram_data_i <= F_ZERO;
+
+
+                //     if (local_addr == 3'd0) begin
+
+                //         local_addr <= 3'd0;
+
+                //         state <= MARCHC_R0;
+
+                //     end else begin
+
+                //         local_addr <= local_addr - 1;
+
+                //     end
+
+                // end
+
+
+                // MARCHC_R0: begin
+
+                //     ram_addr <= local_addr;
+
+                //     if (ram_data_o != F_ZERO) begin
+
+                //         fail <= 1;
+
+                //     end 
+
+                //     if (local_addr == 3'd7) begin
+
+                //         local_addr <= 3'd0;
+
+                //         state <= MARCHC_DONE;
+
+                //     end else begin
+
+                //         local_addr <= local_addr + 1;
+
+                //     end
+
+                // end
+
+
+                // MARCHC_DONE: begin
+
+                //     if (mbist_en != MODE_MARCHC) begin
+
+                //         state <= MARCHC_IDLE;
+
+                //     end
+
+                //     results [0] <= 1'b1;
+
+                //     results [1] <= fail;
+
+                //     results [2] <= ~fail;
+
+                //     ecc_bypass <= 0;
+
+                // end
+
+
+                // default: state <= MARCHC_IDLE;
+
+            endcase
+        end
+    end
+
+        // MODE_MBIST_FAULT_INJECTION: begin
+
+            
+
+        // end
+
+
+        // MODE_NORMAL: begin
+
+        //     ecc_bypass <= 0;
+
+        // end
+
+
+        // MODE_ECC_CHECK: begin
+
+        //     //TBD
+
+        // end
+
+
+        //default: MODE_NORMAL
+
+
+end
+
+endmodule 

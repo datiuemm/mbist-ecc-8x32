@@ -68,51 +68,25 @@ end
 // Instance
 //---------------------------------------------------------------------
 
-wire mbist_en;
-assign mbist_en = (mbist_mode == 3'b001);
-
-wire [4:0]  ram_we;
-wire [2:0]  ram_addr;
-wire [39:0] ram_data_i;
-wire [39:0] ram_data_o;
-wire        ecc_bypass;
-wire [2:0]  results;
-
-assign uo_out[2:0] = results;
-assign uo_out[7:3] = 5'b0;
-
-assign uio_out = 8'b0;
-assign uio_oe  = 8'b0;
-
-wire ram_en = 1'b1;
-
+//RAM
 RAM8 inst_RAM8 (
-    .CLK  (clk),
-    .EN0  (ram_en),
-    .WE0  (ram_we),
-    .A0   (ram_addr),
-    .Di0  (ram_data_i),
-    .Do0  (ram_data_o)
+	.CLK  (clk),
+	.EN0  (1'b1),
+	.WE0  (5'b11111),
+	.A0   (TBD),
+	.Di0  (TBD),
+	.Do0  (TBD)
 );
 
+//MBIST.v
 MBIST inst_MBIST (
-    .clk(clk),
-    .rst_n(rst_n),
-    .mbist_en(mbist_en),
-    .ram_data_o(ram_data_o),
-    .ram_we(ram_we),
-    .ram_addr(ram_addr),
-    .ram_data_i(ram_data_i),
-    .ecc_bypass(ecc_bypass),
-    .results(results)
+	.TBD
 );
-
-wire _unused = &{ena, uio_in, 1'b0};
 
 
 //ECC.v
-//ECC inst_ECC (
-//	.TBD
-//);
+ECC inst_ECC (
+	.TBD
+);
 
 endmodule

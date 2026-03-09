@@ -1,0 +1,177 @@
+# do run.do
+# ** Warning: (vlib-34) Library already exists at "work".
+# Errors: 0, Warnings: 1
+# QuestaSim-64 vlog 2021.2_1 Compiler 2021.05 May 15 2021
+# Start time: 02:14:10 on Mar 10,2026
+# vlog MBIST.v 
+# -- Compiling module MBIST
+# 
+# Top level modules:
+# 	MBIST
+# End time: 02:14:10 on Mar 10,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# QuestaSim-64 vlog 2021.2_1 Compiler 2021.05 May 15 2021
+# Start time: 02:14:10 on Mar 10,2026
+# vlog RAM8.v 
+# -- Compiling module RAM8
+# 
+# Top level modules:
+# 	RAM8
+# End time: 02:14:10 on Mar 10,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# QuestaSim-64 vlog 2021.2_1 Compiler 2021.05 May 15 2021
+# Start time: 02:14:10 on Mar 10,2026
+# vlog tb.v 
+# -- Compiling module tb
+# 
+# Top level modules:
+# 	tb
+# End time: 02:14:10 on Mar 10,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vsim -voptargs="+acc" tb 
+# Start time: 02:14:10 on Mar 10,2026
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# //  Questa Sim-64
+# //  Version 2021.2_1 linux_x86_64 May 15 2021
+# //
+# //  Copyright 1991-2021 Mentor Graphics Corporation
+# //  All Rights Reserved.
+# //
+# //  QuestaSim and its associated documentation contain trade
+# //  secrets and commercial or financial information that are the property of
+# //  Mentor Graphics Corporation and are privileged, confidential,
+# //  and exempt from disclosure under the Freedom of Information Act,
+# //  5 U.S.C. Section 552. Furthermore, this information
+# //  is prohibited from disclosure under the Trade Secrets Act,
+# //  18 U.S.C. Section 1905.
+# //
+# Loading work.tb(fast)
+# Loading work.MBIST(fast)
+# Loading work.RAM8(fast)
+# 
+# ----------------------------------------------------------------------------------------------------------
+#    Time    EN  State  RAM_Addr  local_addr  read_valid     Data_In      Data_Out    Fail
+# ----------------------------------------------------------------------------------------------------------
+#     6000   0     0        0           0            0      0000000000  xxxxxxxxxx    0
+#    16000   0     0        0           0            0      0000000000  xxxxxxxxxx    0
+#    26000   0     0        0           0            0      0000000000  xxxxxxxxxx    0
+#    36000   0     0        0           0            0      0000000000  xxxxxxxxxx    0
+#    46000   0     0        0           0            0      0000000000  xxxxxxxxxx    0
+#    56000   0     0        0           0            0      0000000000  xxxxxxxxxx    0
+# 
+# [TB] --- STARTING MARCH-C TEST ---
+#    66000   1     0        0           0            0      0000000000  xxxxxxxxxx    0
+#    76000   1     1        0           0            0      0000000000  xxxxxxxxxx    0
+#    86000   1     1        0           1            0      0000000000  xxxxxxxxxx    0
+#    96000   1     1        1           2            0      0000000000  xxxxxxxxxx    0
+#   106000   1     1        2           3            0      0000000000  xxxxxxxxxx    0
+#   116000   1     1        3           4            0      0000000000  xxxxxxxxxx    0
+#   126000   1     1        4           5            0      0000000000  xxxxxxxxxx    0
+#   136000   1     1        5           6            0      0000000000  xxxxxxxxxx    0
+#   146000   1     1        6           7            0      0000000000  xxxxxxxxxx    0
+#   156000   1     2        7           0            1      0000000000  xxxxxxxxxx    0
+#   166000   1     2        0           0            0      0000000000  xxxxxxxxxx    0
+#   176000   1     2        0           1            1      ffffffffff  0000000000    0
+#   186000   1     2        1           1            0      ffffffffff  0000000000    0
+#   196000   1     2        1           2            1      ffffffffff  0000000000    0
+#   206000   1     2        2           2            0      ffffffffff  0000000000    0
+#   216000   1     2        2           3            1      ffffffffff  0000000000    0
+#   226000   1     2        3           3            0      ffffffffff  0000000000    0
+#   236000   1     2        3           4            1      ffffffffff  0000000000    0
+#   246000   1     2        4           4            0      ffffffffff  0000000000    0
+#   256000   1     2        4           5            1      ffffffffff  0000000000    0
+#   266000   1     2        5           5            0      ffffffffff  0000000000    0
+#   276000   1     2        5           6            1      ffffffffff  0000000000    0
+#   286000   1     2        6           6            0      ffffffffff  0000000000    0
+#   296000   1     2        6           7            1      ffffffffff  0000000000    0
+#   306000   1     2        7           7            0      ffffffffff  0000000000    0
+#   316000   1     3        7           0            1      ffffffffff  0000000000    0
+#   326000   1     3        0           0            0      ffffffffff  0000000000    0
+#   336000   1     3        0           1            1      0000000000  ffffffffff    0
+#   346000   1     3        1           1            0      0000000000  ffffffffff    0
+#   356000   1     3        1           2            1      0000000000  ffffffffff    0
+#   366000   1     3        2           2            0      0000000000  ffffffffff    0
+#   376000   1     3        2           3            1      0000000000  ffffffffff    0
+#   386000   1     3        3           3            0      0000000000  ffffffffff    0
+#   396000   1     3        3           4            1      0000000000  ffffffffff    0
+#   406000   1     3        4           4            0      0000000000  ffffffffff    0
+#   416000   1     3        4           5            1      0000000000  ffffffffff    0
+#   426000   1     3        5           5            0      0000000000  ffffffffff    0
+#   436000   1     3        5           6            1      0000000000  ffffffffff    0
+#   446000   1     3        6           6            0      0000000000  ffffffffff    0
+#   456000   1     3        6           7            1      0000000000  ffffffffff    0
+#   466000   1     3        7           7            0      0000000000  ffffffffff    0
+#   476000   1     4        7           7            1      0000000000  ffffffffff    0
+#   486000   1     4        7           7            0      0000000000  ffffffffff    0
+#   496000   1     4        7           6            1      ffffffffff  0000000000    0
+#   506000   1     4        6           6            0      ffffffffff  0000000000    0
+#   516000   1     4        6           5            1      ffffffffff  0000000000    0
+#   526000   1     4        5           5            0      ffffffffff  0000000000    0
+#   536000   1     4        5           4            1      ffffffffff  0000000000    0
+#   546000   1     4        4           4            0      ffffffffff  0000000000    0
+#   556000   1     4        4           3            1      ffffffffff  0000000000    0
+#   566000   1     4        3           3            0      ffffffffff  0000000000    0
+#   576000   1     4        3           2            1      ffffffffff  0000000000    0
+#   586000   1     4        2           2            0      ffffffffff  0000000000    0
+#   596000   1     4        2           1            1      ffffffffff  0000000000    0
+#   606000   1     4        1           1            0      ffffffffff  0000000000    0
+#   616000   1     4        1           0            1      ffffffffff  0000000000    0
+#   626000   1     4        0           0            0      ffffffffff  0000000000    0
+#   636000   1     5        0           7            1      ffffffffff  0000000000    0
+#   646000   1     5        7           7            0      ffffffffff  0000000000    0
+#   656000   1     5        7           6            1      0000000000  ffffffffff    0
+#   666000   1     5        6           6            0      0000000000  ffffffffff    0
+#   676000   1     5        6           5            1      0000000000  ffffffffff    0
+#   686000   1     5        5           5            0      0000000000  ffffffffff    0
+#   696000   1     5        5           4            1      0000000000  ffffffffff    0
+#   706000   1     5        4           4            0      0000000000  ffffffffff    0
+#   716000   1     5        4           3            1      0000000000  ffffffffff    0
+#   726000   1     5        3           3            0      0000000000  ffffffffff    0
+#   736000   1     5        3           2            1      0000000000  ffffffffff    0
+#   746000   1     5        2           2            0      0000000000  ffffffffff    0
+#   756000   1     5        2           1            1      0000000000  ffffffffff    0
+#   766000   1     5        1           1            0      0000000000  ffffffffff    0
+#   776000   1     5        1           0            1      0000000000  ffffffffff    0
+#   786000   1     5        0           0            0      0000000000  ffffffffff    0
+#   796000   1     6        0           7            1      0000000000  ffffffffff    0
+#   806000   1     6        7           6            1      0000000000  ffffffffff    0
+#   816000   1     6        6           5            1      0000000000  0000000000    0
+#   826000   1     6        5           4            1      0000000000  0000000000    0
+#   836000   1     6        4           3            1      0000000000  0000000000    0
+#   846000   1     6        3           2            1      0000000000  0000000000    0
+#   856000   1     6        2           1            1      0000000000  0000000000    0
+#   866000   1     6        1           0            1      0000000000  0000000000    0
+#   876000   1     7        0           0            1      0000000000  0000000000    0
+#   886000   1     7        0           0            1      0000000000  0000000000    0
+#   896000   1     7        0           0            1      0000000000  0000000000    0
+#   906000   1     7        0           0            1      0000000000  0000000000    0
+#   916000   1     7        0           0            1      0000000000  0000000000    0
+#   926000   1     7        0           0            1      0000000000  0000000000    0
+#   936000   1     7        0           0            1      0000000000  0000000000    0
+#   946000   1     7        0           0            1      0000000000  0000000000    0
+#   956000   1     7        0           0            1      0000000000  0000000000    0
+#   966000   1     7        0           0            1      0000000000  0000000000    0
+#   976000   1     7        0           0            1      0000000000  0000000000    0
+#   986000   1     7        0           0            1      0000000000  0000000000    0
+#   996000   1     7        0           0            1      0000000000  0000000000    0
+#  1006000   1     7        0           0            1      0000000000  0000000000    0
+#  1016000   1     7        0           0            1      0000000000  0000000000    0
+#  1026000   1     7        0           0            1      0000000000  0000000000    0
+#  1036000   1     7        0           0            1      0000000000  0000000000    0
+#  1046000   1     7        0           0            1      0000000000  0000000000    0
+#  1056000   1     7        0           0            1      0000000000  0000000000    0
+# 
+# -------------------------------------------------------
+# [TB] --- MBIST FINISHED ---
+# [RESULT] >>> TEST STATUS: PASSED <<< (All patterns matched)
+# -------------------------------------------------------
+# 
+#  1066000   1     7        0           0            1      0000000000  0000000000    0
+#  1076000   1     7        0           0            1      0000000000  0000000000    0
+#  1086000   1     7        0           0            1      0000000000  0000000000    0
+#  1096000   1     7        0           0            1      0000000000  0000000000    0
+#  1106000   1     7        0           0            1      0000000000  0000000000    0
+# ** Note: $finish    : tb.v(116)
+#    Time: 1115 ns  Iteration: 0  Instance: /tb
+# End time: 02:14:11 on Mar 10,2026, Elapsed time: 0:00:01
+# Errors: 0, Warnings: 0

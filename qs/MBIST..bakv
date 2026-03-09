@@ -1,0 +1,216 @@
+module mbist_march_c
+(
+    input clk,
+    input rst_n,
+    input start,
+
+    output reg [2:0] ram_addr,
+    output reg [39:0] ram_data_i,
+    output reg [4:0] ram_we,
+    input      [39:0] ram_data_o,
+
+    output reg done,
+    output reg fail
+);
+
+localparam F_ZERO = 40'h0;
+localparam F_ONE  = 40'hFFFFFFFFFF;
+
+localparam
+S_IDLE   = 0,
+S_W0_UP  = 1,
+S_R0_UP  = 2,
+S_W1_UP  = 3,
+S_R1_DN  = 4,
+S_W0_DN  = 5,
+S_R0_DN  = 6,
+S_W1_DN  = 7,
+S_R1_DN2 = 8,
+S_W0_DN2 = 9,
+S_R0_FIN = 10,
+S_DONE   = 11;
+
+reg [3:0] state;
+reg [2:0] addr;
+
+always @(posedge clk or negedge rst_n) begin
+if(!rst_n) begin
+    state <= S_IDLE;
+    addr  <= 0;
+    ram_we <= 0;
+    done <= 0;
+    fail <= 0;
+end
+else begin
+
+case(state)
+
+S_IDLE:
+begin
+    done <= 0;
+    fail <= 0;
+    ram_we <= 0;
+
+    if(start) begin
+        addr <= 0;
+        state <= S_W0_UP;
+    end
+end
+
+// ↑ w0
+S_W0_UP:
+begin
+    ram_addr <= addr;
+    ram_data_i <= F_ZERO;
+    ram_we <= 5'b11111;
+
+    if(addr==7) begin
+        addr <= 0;
+        ram_we <= 0;
+        state <= S_R0_UP;
+    end
+    else addr <= addr + 1;
+end
+
+// ↑ r0
+S_R0_UP:
+begin
+    ram_addr <= addr;
+    ram_we <= 0;
+    state <= S_W1_UP;
+end
+
+// ↑ w1 + compare r0
+S_W1_UP:
+begin
+    if(ram_data_o != F_ZERO)
+        fail <= 1;
+
+    ram_addr <= addr;
+    ram_data_i <= F_ONE;
+    ram_we <= 5'b11111;
+
+    if(addr==7) begin
+        addr <= 7;
+        ram_we <= 0;
+        state <= S_R1_DN;
+    end
+    else begin
+        addr <= addr + 1;
+        state <= S_R0_UP;
+    end
+end
+
+// ↓ r1
+S_R1_DN:
+begin
+    ram_addr <= addr;
+    ram_we <= 0;
+    state <= S_W0_DN;
+end
+
+// ↓ w0 + compare r1
+S_W0_DN:
+begin
+    if(ram_data_o != F_ONE)
+        fail <= 1;
+
+    ram_addr <= addr;
+    ram_data_i <= F_ZERO;
+    ram_we <= 5'b11111;
+
+    if(addr==0) begin
+        addr <= 7;
+        ram_we <= 0;
+        state <= S_R0_DN;
+    end
+    else begin
+        addr <= addr - 1;
+        state <= S_R1_DN;
+    end
+end
+
+// ↓ r0
+S_R0_DN:
+begin
+    ram_addr <= addr;
+    ram_we <= 0;
+    state <= S_W1_DN;
+end
+
+// ↓ w1 + compare r0
+S_W1_DN:
+begin
+    if(ram_data_o != F_ZERO)
+        fail <= 1;
+
+    ram_addr <= addr;
+    ram_data_i <= F_ONE;
+    ram_we <= 5'b11111;
+
+    if(addr==0) begin
+        addr <= 7;
+        ram_we <= 0;
+        state <= S_R1_DN2;
+    end
+    else begin
+        addr <= addr - 1;
+        state <= S_R0_DN;
+    end
+end
+
+// ↓ r1
+S_R1_DN2:
+begin
+    ram_addr <= addr;
+    ram_we <= 0;
+    state <= S_W0_DN2;
+end
+
+// ↓ w0 + compare r1
+S_W0_DN2:
+begin
+    if(ram_data_o != F_ONE)
+        fail <= 1;
+
+    ram_addr <= addr;
+    ram_data_i <= F_ZERO;
+    ram_we <= 5'b11111;
+
+    if(addr==0) begin
+        addr <= 0;
+        ram_we <= 0;
+        state <= S_R0_FIN;
+    end
+    else begin
+        addr <= addr - 1;
+        state <= S_R1_DN2;
+    end
+end
+
+// ↑ r0
+S_R0_FIN:
+begin
+    ram_addr <= addr;
+    ram_we <= 0;
+
+    if(ram_data_o != F_ZERO)
+        fail <= 1;
+
+    if(addr==7)
+        state <= S_DONE;
+    else
+        addr <= addr + 1;
+end
+
+S_DONE:
+begin
+    done <= 1;
+end
+
+endcase
+
+end
+end
+
+endmodule
