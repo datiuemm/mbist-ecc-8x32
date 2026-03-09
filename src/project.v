@@ -107,7 +107,14 @@ MBIST inst_MBIST (
     .results(results)
 );
 
-wire _unused = &{ena, uio_in, 1'b0};
+wire _unused = &{
+    ena,
+    uio_in,
+    ecc_bypass,
+    add_in,
+    ui_in[7:6],
+    1'b0
+};
 
 
 //ECC.v
