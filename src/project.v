@@ -85,6 +85,7 @@ assign uio_out = 8'b0;
 assign uio_oe  = 8'b0;
 
 wire ram_en;
+assign ram_en = 1'b1;
 
 RAM8 inst_RAM8 (
     .CLK  (clk),
@@ -100,7 +101,6 @@ MBIST inst_MBIST (
     .rst_n(rst_n),
     .mbist_en(mbist_en),
     .ram_data_o(ram_data_o),
-    .ram_en(ram_en),
     .ram_we(ram_we),
     .ram_addr(ram_addr),
     .ram_data_i(ram_data_i),
