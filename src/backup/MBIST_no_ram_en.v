@@ -4,8 +4,6 @@ module MBIST (
     input wire        mbist_en,
     input wire [39:0] ram_data_o,
 
-
-    output reg        ram_en, 
     output reg [4:0]  ram_we,
     output reg [2:0]  ram_addr,
     output reg [39:0] ram_data_i,
@@ -46,7 +44,6 @@ module MBIST (
             read_valid   <= 1'b0;
             check_pipe   <= 3'b000;
             exp_data_pipe<= 3'b000;
-            ram_en <= 1'b0;
         end
         else begin
             check_pipe    <= {check_pipe[1:0], 1'b0};
@@ -60,12 +57,9 @@ module MBIST (
                         fail       <= 0;
                         results    <= 3'b000;
                         state      <= MARCHC_W0;
-                        ram_en <= 1'b1;//EN berfore 1 cycle to make sure RAM timing...
                     end
 
                     MARCHC_W0: begin
-                    	results[0] <= 1'b1;
-                    	ram_en <= 1'b1;
                         ram_we     <= 5'b11111;
                         ram_addr   <= local_addr;
                         ram_data_i <= F_ZERO;
@@ -81,13 +75,11 @@ module MBIST (
                     MARCHC_R0W1: begin
                         ram_addr <= local_addr;
                         if (read_valid) begin
-                            ram_en <= 1'b1;
                             ram_we <= 5'b00000;
                             read_valid <= 1'b0;
                             check_pipe[0]    <= 1'b1;
                             exp_data_pipe[0] <= 1'b0; 
                         end else begin
-                            ram_en <= 1'b1;
                             ram_we     <= 5'b11111;
                             ram_data_i <= F_ONE;
                             if (local_addr == 3'd7) begin
@@ -103,13 +95,11 @@ module MBIST (
                     MARCHC_R1W0: begin
                         ram_addr <= local_addr;
                         if (read_valid) begin
-                            ram_en <= 1'b1;
                             ram_we <= 5'b00000;
                             read_valid <= 1'b0;
                             check_pipe[0]    <= 1'b1;
                             exp_data_pipe[0] <= 1'b1;
                         end else begin
-                            ram_en <= 1'b1;
                             ram_we     <= 5'b11111;
                             ram_data_i <= F_ZERO;
                             if (local_addr == 3'd7) begin
@@ -125,13 +115,11 @@ module MBIST (
                     MARCHC_R0W1_D: begin
                         ram_addr <= local_addr;
                         if (read_valid) begin
-                            ram_en <= 1'b1;
                             ram_we <= 5'b00000;
                             read_valid <= 1'b0;
                             check_pipe[0]    <= 1'b1;
                             exp_data_pipe[0] <= 1'b0;
                         end else begin
-                            ram_en <= 1'b1;
                             ram_we     <= 5'b11111;
                             ram_data_i <= F_ONE;
                             if (local_addr == 3'd0) begin
@@ -147,13 +135,11 @@ module MBIST (
                     MARCHC_R1W0_D: begin
                         ram_addr <= local_addr;
                         if (read_valid) begin
-                            ram_en <= 1'b1;
                             ram_we <= 5'b00000;
                             read_valid <= 1'b0;
                             check_pipe[0]    <= 1'b1;
                             exp_data_pipe[0] <= 1'b1;
                         end else begin
-                            ram_en <= 1'b1;
                             ram_we     <= 5'b11111;
                             ram_data_i <= F_ZERO;
                             if (local_addr == 3'd0) begin
@@ -168,7 +154,6 @@ module MBIST (
 
                     MARCHC_R0: begin
                         ram_addr <= local_addr;
-                        ram_en <= 1'b1;
                         ram_we   <= 5'b00000;
                         check_pipe[0]    <= 1'b1;
                         exp_data_pipe[0] <= 1'b0; 
@@ -183,7 +168,6 @@ module MBIST (
                         results[0] <= 1'b1;
                         results[1] <= fail;
                         results[2] <= ~fail;
-                        ram_en <= 1'b0;
                         ecc_bypass <= 0;
                         if (!mbist_en) state <= MARCHC_IDLE;
                     end
@@ -192,22 +176,14 @@ module MBIST (
                 endcase
             end
 
-            if (check_pipe[2]) begin
-                if (^ram_data_o === 1'bX) begin
-                    // skip transient unknown in gate-level simulation
-                end
-            else begin
+            if (check_pipe[2]) begin 
                 if (exp_data_pipe[2] == 1'b0) begin
-                    if (ram_data_o != F_ZERO)
-                        fail <= 1'b1;
-                    end
-                else begin
-                    if (ram_data_o != F_ONE)
-                        fail <= 1'b1;
+                    if (ram_data_o != F_ZERO) fail <= 1'b1;
+                end else begin
+                    if (ram_data_o != F_ONE)  fail <= 1'b1;
                 end
             end
         end
-    end
     end
 
 endmodule
