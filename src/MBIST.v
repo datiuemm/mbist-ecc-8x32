@@ -184,29 +184,32 @@ module MBIST (
                         results[1] <= fail;
                         results[2] <= ~fail;
                         ram_en <= 1'b0;
+                        ram_we <= 5'b00000;
                         ecc_bypass <= 0;
                         if (!mbist_en) state <= MARCHC_IDLE;
                     end
                     
-                    default: state <= MARCHC_IDLE;
+                    default: begin
+    state <= MARCHC_IDLE;
+    ram_en <= 1'b0;
+    ram_we <= 5'b00000;
+end
                 endcase
             end
 
-            if (check_pipe[2]) begin
-                if (^ram_data_o === 1'bX) begin
-                    // skip transient unknown in gate-level simulation
-                end
-            else begin
-                if (exp_data_pipe[2] == 1'b0) begin
-                    if (ram_data_o != F_ZERO)
-                        fail <= 1'b1;
-                    end
-                else begin
-                    if (ram_data_o != F_ONE)
-                        fail <= 1'b1;
-                end
-            end
+   if (check_pipe[2]) begin
+    if (^ram_data_o === 1'bX) begin
+        // skip transient unknown
+    end else begin
+        if (exp_data_pipe[2] == 1'b0) begin
+            if (ram_data_o != F_ZERO)
+                fail <= 1'b1;
+        end else begin
+            if (ram_data_o != F_ONE)
+                fail <= 1'b1;
         end
+    end
+end
     end
     end
 
