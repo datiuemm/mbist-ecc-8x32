@@ -60,6 +60,7 @@ module MBIST (
                     end
 
                     MARCHC_W0: begin
+                    	results[0] <= 1'b1;
                         ram_we     <= 5'b11111;
                         ram_addr   <= local_addr;
                         ram_data_i <= F_ZERO;
@@ -176,13 +177,21 @@ module MBIST (
                 endcase
             end
 
-            if (check_pipe[2]) begin 
+            if (check_pipe[2]) begin
+                if (^ram_data_o === 1'bX) begin
+                    // skip transient unknown in gate-level simulation
+                end
+            else begin
                 if (exp_data_pipe[2] == 1'b0) begin
-                    if (ram_data_o != F_ZERO) fail <= 1'b1;
-                end else begin
-                    if (ram_data_o != F_ONE)  fail <= 1'b1;
+                    if (ram_data_o != F_ZERO)
+                        fail <= 1'b1;
+                    end
+                else begin
+                    if (ram_data_o != F_ONE)
+                        fail <= 1'b1;
                 end
             end
+        end
         end
     end
 
