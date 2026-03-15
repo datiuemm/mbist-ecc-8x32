@@ -75,7 +75,7 @@ wire [4:0]  ram_we;
 wire [2:0]  ram_addr;
 wire [39:0] ram_data_i;
 wire [39:0] ram_data_o;
-wire [39:0] ecc_encoded_data;
+wire [38:0] ecc_encoded_data;
 wire [31:0] ecc_decoded_data;
 wire        ecc_bypass;
 wire [2:0]  results;
@@ -93,7 +93,7 @@ RAM8 inst_RAM8 (
     .EN0  (ram_en),
     .WE0  (ram_we),
     .A0   (ram_addr),
-    .Di0  (ecc_encoded_data),
+    .Di0  ({1'b0,ecc_encoded_data}),
     .Do0  (ram_data_o)
 );
 
@@ -128,7 +128,7 @@ ecc_dec #(
     .clk_i(clk),
     .clkena_i(1'b1),
     .ecc_bypass_i(ecc_bypass),
-    .d_i(ram_data_o),
+    .d_i(ram_data_o[38:0]),
     .q_o(ecc_decoded_data),
     .syndrome_o(),
     .sb_err_o(),
