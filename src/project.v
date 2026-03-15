@@ -75,6 +75,8 @@ wire [4:0]  ram_we;
 wire [2:0]  ram_addr;
 wire [39:0] ram_data_i;
 wire [39:0] ram_data_o;
+wire [39:0] ecc_encoded_data;
+wire [31:0] ecc_decoded_data;
 wire        ecc_bypass;
 wire [2:0]  results;
 
@@ -91,7 +93,7 @@ RAM8 inst_RAM8 (
     .EN0  (ram_en),
     .WE0  (ram_we),
     .A0   (ram_addr),
-    .Di0  (ram_data_i),
+    .Di0  (ecc_encoded_data),
     .Do0  (ram_data_o)
 );
 
@@ -108,12 +110,38 @@ MBIST inst_MBIST (
     .results(results)
 );
 
+ecc_enc #(
+    .K(32)
+) inst_ecc_enc (
+    .ecc_bypass_i(ecc_bypass),
+    .d_i(ram_data_i[31:0]),
+    .q_o(ecc_encoded_data),
+    .p_o(),
+    .p0_o()
+);
+
+ecc_dec #(
+    .K(32),
+    .LATENCY(0)
+) inst_ecc_dec (
+    .rst_ni(rst_n),
+    .clk_i(clk),
+    .clkena_i(1'b1),
+    .ecc_bypass_i(ecc_bypass),
+    .d_i(ram_data_o),
+    .q_o(ecc_decoded_data),
+    .syndrome_o(),
+    .sb_err_o(),
+    .db_err_o(),
+    .sb_fix_o()
+);
+
 wire _unused = &{
     ena,
     uio_in,
-    ecc_bypass,
     add_in,
     ui_in[7:6],
+    ecc_decoded_data,
     1'b0
 };
 
