@@ -177,21 +177,13 @@ module MBIST (
                 endcase
             end
 
-            if (check_pipe[2]) begin
-                if (^ram_data_o === 1'bX) begin
-                    // skip transient unknown in gate-level simulation
-                end
-            else begin
+            if (check_pipe[2]) begin 
                 if (exp_data_pipe[2] == 1'b0) begin
-                    if (ram_data_o != F_ZERO)
-                        fail <= 1'b1;
-                    end
-                else begin
-                    if (ram_data_o != F_ONE)
-                        fail <= 1'b1;
+                    if (ram_data_o != F_ZERO) fail <= 1'b1;
+                end else begin
+                    if (ram_data_o != F_ONE)  fail <= 1'b1;
                 end
             end
-        end
         end
     end
 
