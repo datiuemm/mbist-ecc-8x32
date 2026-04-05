@@ -1,0 +1,111 @@
+`timescale 1ns/1ps
+
+module RTL_ECC_fault_injection;
+
+parameter K = 8;
+parameter m = 4;
+parameter n = 12;
+
+reg  [K-1:0] data_in;
+reg          ecc_bypass_i;
+
+wire [n:0]   enc_out;
+reg  [n:0]   faulty_data;
+
+reg          rst_ni;
+reg          clk_i;
+reg          clkena_i;
+
+wire [K-1:0] q_o;
+wire [m:0]   syndrome_o;
+wire         sb_err_o;
+wire         db_err_o;
+wire         sb_fix_o;
+
+wire [m:1] p_o;
+wire p0_o;
+
+integer errors;
+
+ecc_enc uut_enc (
+    .d_i(data_in),
+    .ecc_bypass_i(ecc_bypass_i),
+    .q_o(enc_out),
+    .p_o(p_o),
+    .p0_o(p0_o)
+);
+
+ecc_dec uut_dec (
+    .rst_ni(rst_ni),
+    .clk_i(clk_i),
+    .clkena_i(clkena_i),
+    .d_i(faulty_data),
+    .ecc_bypass_i(ecc_bypass_i),
+    .q_o(q_o),
+    .syndrome_o(syndrome_o),
+    .sb_err_o(sb_err_o),
+    .db_err_o(db_err_o),
+    .sb_fix_o(sb_fix_o)
+);
+
+always #5 clk_i = ~clk_i;
+
+task check_single_bit;
+begin
+    #1;
+    if (q_o !== data_in || sb_err_o !== 1 || db_err_o !== 0) begin
+        $display("FAIL SINGLE BIT: dec=%h sb=%b db=%b fix=%b syndrome=%b",
+                  q_o,sb_err_o,db_err_o,sb_fix_o,syndrome_o);
+        errors = errors + 1;
+    end
+    else begin
+        $display("PASS SINGLE BIT: corrected dec=%h syndrome=%b fix=%b",
+                  q_o,syndrome_o,sb_fix_o);
+    end
+end
+endtask
+
+task check_double_bit;
+begin
+    #1;
+    if (db_err_o !== 1) begin
+        $display("FAIL DOUBLE BIT: dec=%h sb=%b db=%b fix=%b syndrome=%b",
+                  q_o,sb_err_o,db_err_o,sb_fix_o,syndrome_o);
+        errors = errors + 1;
+    end
+    else begin
+        $display("PASS DOUBLE BIT: detected syndrome=%b",
+                  syndrome_o);
+    end
+end
+endtask
+
+initial begin
+    clk_i = 0;
+    rst_ni = 0;
+    clkena_i = 1;
+    ecc_bypass_i = 0;
+    errors = 0;
+
+    #10 rst_ni = 1;
+
+    data_in = 8'hA5;
+    #10;
+
+    // single bit error
+    faulty_data = enc_out ^ 13'b0000000000010;
+    #10 check_single_bit;
+
+    // double bit error
+    faulty_data = enc_out ^ 13'b0000000000011;
+    #10 check_double_bit;
+
+    if (errors == 0)
+        $display("========== ALL FAULT TESTS PASSED ==========");
+    else
+        $display("========== FAULT TEST FAILED : %0d errors ==========", errors);
+
+    $finish;
+end
+
+endmodule
