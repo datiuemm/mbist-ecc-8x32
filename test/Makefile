@@ -9,8 +9,8 @@ SRC_DIR = $(PWD)/../src
 PROJECT_SOURCES = project.v \
 		  MBIST.v \
 		  RAM8.v \
-		  ecc_dec.v \
-		  ecc_enc.v
+		  ecc_dec.sv \
+		  ecc_enc.sv
 
 ifneq ($(GATES),yes)
 
