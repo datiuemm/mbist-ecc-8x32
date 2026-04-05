@@ -20,8 +20,8 @@ project:
     - "project.v"
     - "RAM8.nl.v"
     - "MBIST.v"
-    - "ecc_enc.sv"
-    - "ecc_dec.sv"
+    - "ecc_enc.v"
+    - "ecc_dec.v"
 
 # The pinout of your project. Leave unused pins blank. DO NOT delete or add any pins.
 # This section is for the datasheet/website. Use descriptive names (e.g., RX, TX, MOSI, SCL, SEG_A, etc.).
