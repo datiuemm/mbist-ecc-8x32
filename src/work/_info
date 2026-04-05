@@ -1,0 +1,152 @@
+m255
+K4
+z2
+Z0 !s99 nomlopt
+R0
+!s11f vlog 2021.2_1 2021.05, May 15 2021
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z1 d/home/datiuemm/mbist-ecc-8x32/src
+T_opt
+!s110 1773593172
+VWYIiSVCmh:VY]>]ZAI93c1
+Z2 04 14 4 work tt_um_datiuemm fast 0
+=1-f83441ff57cb-69b6e252-8f917-6850
+Z3 !s124 OEM100
+o-quiet -auto_acc_if_foreign -work work
+Z4 tCvgOpt 0
+n@_opt
+Z5 OL;O;2021.2_1;73
+R1
+T_opt1
+Z6 !s110 1773593288
+V?0lI?R8I6;8_KEfn45gYQ0
+R2
+=1-f83441ff57cb-69b6e2c8-2dca7-6aea
+R3
+o-quiet -auto_acc_if_foreign -work work +acc
+R4
+n@_opt1
+R5
+vecc_dec
+Z7 DXx6 sv_std 3 std 0 22 9oUSJO;AeEaW`l:M@^WG92
+Z8 !s110 1773593287
+!i10b 1
+!s100 3UVKg1SLX]JQ8RzTJ24311
+IkE38l[dIDUGMj:@n[1ioi0
+S1
+R1
+w1773585824
+8ecc_dec.sv
+Fecc_dec.sv
+!i122 18
+L0 98 218
+Z9 VDg1SIo80bB@j0V0VzS_@n1
+Z10 OL;L;2021.2_1;73
+r1
+!s85 0
+31
+Z11 !s108 1773593287.000000
+!s107 ecc_dec.sv|
+!s90 -sv|ecc_dec.sv|
+!i113 0
+Z12 o-sv -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+R4
+vecc_enc
+R7
+R8
+!i10b 1
+!s100 ?h@5UQ^5[@;V2Q`Oaf6T92
+IF5ggP8n9W1B=JNU=BMAzb1
+S1
+R1
+w1773585728
+8ecc_enc.sv
+Fecc_enc.sv
+!i122 17
+L0 95 127
+R9
+R10
+r1
+!s85 0
+31
+R11
+!s107 ecc_enc.sv|
+!s90 -sv|ecc_enc.sv|
+!i113 0
+R12
+R4
+vMBIST
+R8
+!i10b 1
+!s100 imZJkcV28Se0ng@1Iz@8j0
+I<Q_]zzNGJ6dSAj^aM<C1>1
+R1
+w1773543264
+8MBIST.v
+FMBIST.v
+!i122 15
+L0 1 204
+R9
+R10
+r1
+!s85 0
+31
+R11
+!s107 MBIST.v|
+!s90 MBIST.v|
+!i113 0
+Z13 o-L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+R4
+n@m@b@i@s@t
+vRAM8
+R7
+R8
+!i10b 1
+!s100 m=nOaG]3;jM3;dODHO39M1
+Ie^JVhZW[>`bP66dGnmihP2
+S1
+R1
+w1773592632
+8RAM8.v
+FRAM8.v
+!i122 16
+L0 5 26
+R9
+R10
+r1
+!s85 0
+31
+R11
+!s107 RAM8.v|
+!s90 -sv|RAM8.v|
+!i113 0
+R12
+R4
+n@r@a@m8
+vtt_um_datiuemm
+R6
+!i10b 1
+!s100 Nd^LVV=6@?h_mSlaSIdOa0
+I>?79bHlTWZ>S8c61W=BPc1
+R1
+w1773588530
+8project.v
+Fproject.v
+!i122 19
+L0 12 143
+R9
+R10
+r1
+!s85 0
+31
+R11
+!s107 project.v|
+!s90 project.v|
+!i113 0
+R13
+R4
