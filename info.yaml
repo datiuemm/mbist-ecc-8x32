@@ -1,6 +1,6 @@
 # Tiny Tapeout project information
 project:
-  title:        "mbist-ecc-8x32"      # Project title
+  title:        "IEEE MBIST & ECC for RAM 8x32"      # Project title
   author:       "datiuemm"      # Your name
   discord:      "none"      # Your discord username, for communication and automatically assigning you a Tapeout role (optional)
   description:  "This is MBIST and ECC on 8x32 data RAM"      # One line description of what your project does
